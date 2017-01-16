@@ -1,4 +1,5 @@
-# Depenency injection with Unity
+# Dependency injetion with Unity
+
 
 ## Source
 
@@ -13,7 +14,7 @@ Other upsides of loosely coupled code:
 * Parallel development
 * Maintainability
 
-The contents of this tutorial are based on the **Pluralsight** course about Inversion of Control ([[[https://app.pluralsight.com/library/courses/inversion-of-control| link]]]).
+The contents of this tutorial are based on the **Pluralsight** course about Inversion of Control ([ link](https://app.pluralsight.com/library/courses/inversion-of-control)).
 
 In the course, 4 IoC are explained:
 * Unity
@@ -21,7 +22,7 @@ In the course, 4 IoC are explained:
 * Structure Map
 * Ninject
 
-**Unity** seems to be one of the best (or even the best), in terms of speed, between the 4 mentioned in the course: [[[https://cardinalcore.co.uk/2015/01/28/ioc-battle-in-2015-results-using-ninject-think-again/| speed comparison]]].
+**Unity** seems to be one of the best (or even the best), in terms of speed, between the 4 mentioned in the course: [ speed comparison](https://cardinalcore.co.uk/2015/01/28/ioc-battle-in-2015-results-using-ninject-think-again/).
 
 ## Step one: registering the types
 
@@ -29,26 +30,22 @@ Of course first of all we need to install **Unity** from **Nuget**.
 
 Then, we define the container:
 
-
 	var container = new UnityContainer();
-
 
 A Dependency Injection Container is an object that knows how to instantiate and configure objects. And to be able to do its job, it needs to knows about the constructor arguments and the relationships between the objects:
 
-
 	// basic:
 	container.RegisterType<ICreditCard, MasterCard>();
-
+	
 	// constructor injection (modify a public property of the implementation when initializing it):
 	container.RegisterType<ICreditCard, MasterCard>(new InjectionProperty(nameof(ICreditCard.ChargeCount), 5));
-
+	
 	// create an identifier for the instantiation. In this case "DefaultCard" is the name that identifies the registration:
 	container.RegisterType<ICreditCard, MasterCard>("DefaultCard");
-
+	
 	// register an instance:
 	var card = new MasterCard();
 	container.RegisterInstance(card);
-
 
 **Note:** If there is only 1 implementation of the interface, we don't need to register it first. Unity is smart enough to infer its implementation.
 
@@ -56,22 +53,18 @@ A Dependency Injection Container is an object that knows how to instantiate and 
 
 Now that the container knows about the objects we will want to use later, how do we call them? We use this syntax:
 
-
 	var myInstantiatedObject = container.Resolve<Shopper>();
 
-
-**Note:** with the implementation above, if you encounter the error "The non-generic method 'Microsoft.Practices.Unity.IUnityContainer.Resolve(System.Type, string, params Microsoft.Practices.Unity.ResolverOverride[])' cannot be used with type arguments", it can be solved like explained in this [[[http://stackoverflow.com/questions/2875429/iunitycontainer-resolvet-throws-error-claiming-it-cannot-be-used-with-type-par| stackoverflow link]]] =>
+**Note:** with the implementation above, if you encounter the error "The non-generic method 'Microsoft.Practices.Unity.IUnityContainer.Resolve(System.Type, string, params Microsoft.Practices.Unity.ResolverOverride[])' cannot be used with type arguments", it can be solved like explained in this [ stackoverflow link](http://stackoverflow.com/questions/2875429/iunitycontainer-resolvet-throws-error-claiming-it-cannot-be-used-with-type-par) =>
 "Looks like, even if it is not a dll in Unity V2 you have to add a reference in your class to: `Microsoft.Practices.Unity`"
 
 ## Singleton
 
 The examples of registering shown above will create a **new** object every time the instance is called (it uses the default mode: `TransientLifetimeManager`). If we want to avoid that, that is to say, if we want to use a **singleton**, we must implement the registration like this:
 
-
 	container.RegisterType<ICreditCard, MasterCard>(new ContainerControlledLifetimeManager());
 
-
-More on Lifetime (or "lifecycle") management [[[https://msdn.microsoft.com/en-us/library/ff660872(v=pandp.20).aspx| in this link]]].
+More on Lifetime (or "lifecycle") management [ in this link](https://msdn.microsoft.com/en-us/library/ff660872(v=pandp.20).aspx).
 
 
 ## Simple use
@@ -97,18 +90,14 @@ The same blog post also talks about how to use it properly.
 ## Other types of registration
 
 Register instance:
-
 	var classInstance = new ClassName();
 	Container.RegisterInstance<IClassInterface>(classInstance );
 
-
 Property injection:
-
 	// We are telling the resolver to resolve that particular property.
 	// Otherwise, if it's not part of the constructor, it will not try to resolve it.
 	Container.RegisterType<ServiceRepository>(
 		new InjectionProperty("ServiceProxy"));
-
 
 
 ## Next
