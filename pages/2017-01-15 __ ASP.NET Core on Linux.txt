@@ -1,0 +1,186 @@
+# ASP.NET Core on Linux
+
+
+## Info
+
+There are two main sources for this post:
+
+# Scott Hanselman's blog post: [ "Publishing an ASP.NET Core website to a cheap Linux VM host"](http://www.hanselman.com/blog/PublishingAnASPNETCoreWebsiteToACheapLinuxVMHost.aspx) (it starts with some basic concepts about how to start with a basic virtual linux machine).
+# The official Microsoft doc: [ Publish to a Linux Production Environment](https://docs.microsoft.com/en-us/aspnet/core/publishing/linuxproduction) (it doesn't user `supervisor`, it includes more advanced functionalities).
+
+## Corrections from the original article
+
+* To configure the supervisor process of your app, use `/etc/supervisor/conf.d/dotnettest.conf` (for more details: [ supervisor online docs](http://supervisord.org/configuration.html)).
+* Instead of `command=/usr/bin/dotnet /var/dotnettest/dotnettest.dll --server.urls:http://*:5123` it must be `command=/usr/bin/dotnet /var/dotnettest/dotnettest.dll --server.urls=http://*:5123`.
+* The `hosting.json` is not automatically copied after build (thus nor after publish). You have to either add it to the project or copy it manually. If you mess up this part, the web will use :5000 and you won't understand what's going on (because nginx will be pointing at :5123).
+* After changing `Program.cs`, you  must add this at the top of the file: `using Microsoft.Extensions.Configuration;`.
+* If at any point you must restore the original configuration because you messed up: `sudo apt-get purge PACKET_NAME` (and then re-install)
+
+
+## Setup a user that isn't root
+
+It's always a good idea to avoid being root. After logging into the system as root, make a new user and give them sudo (super user do):
+
+	$ adduser mynewusername
+	$ usermod -aG sudo mynewusername
+
+Then I'll logout and go back in as mynewusername.
+
+
+## Installing .NET Core on Linux
+
+### Add the dotnet apt-get feed
+
+Get ubuntu version:
+
+	$ lsb_release -a
+
+Add the dotnet apt-get feed (it will depend on your linux version):
+https://www.microsoft.com/net/core#linuxubuntu
+
+In my case:
+
+	$ sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
+	$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
+	$ sudo apt-get update
+
+### Install .NET Core SDK
+
+	$ sudo apt-get install dotnet-dev-1.0.0-preview2.1-003177
+
+## Configuring your ASP.NET app
+
+	  .UseKestrel()
+	  .UseUrls("http://*:80")
+
+
+## Copy from server A to B
+
+To copy a file from A to B while logged into A:
+
+	scp /path/to/file username@ip_address_of_B:/path/to/destination
+
+To copy a directory, use "-r" (recursively copy entire directories)
+
+	scp -r /path/to/directory username@ip_address_of_B:/path/to/destination
+
+
+## How To Install MySQL on Ubuntu 14.04
+
+Source: https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-14-04
+
+ sudo apt-get update
+ sudo apt-get install mysql-server
+ sudo mysql_secure_installation
+ sudo mysql_install_db
+
+
+## .sql file import
+
+
+### Upload
+
+Your local windows files are under /mnt
+
+ cd /mnt/c
+
+Upload:
+
+ scp your_sql_dump.sql username@remote_ip:path/to/remote/dir
+
+
+### Import
+
+First create the database:
+
+ mysql -u your_user_name -p
+ CREATE DATABASE database_name;
+
+Importing  mysql file
+
+ mysql -u <user> -p<password> <dbname> < file.sql
+
+
+## Asp.net core app deployment
+
+Source:
+https://docs.microsoft.com/en-us/aspnet/core/publishing/linuxproduction
+
+Install nginx:
+
+ sudo apt-get install nginx
+
+ sudo nano /etc/nginx/sites-available/default
+
+	server {
+	    listen 80;
+	    location / {
+	        proxy_pass http://localhost:5000;
+	        proxy_http_version 1.1;
+	        proxy_set_header Upgrade $http_upgrade;
+	        proxy_set_header Connection keep-alive;
+	        proxy_set_header Host $host;
+	        proxy_cache_bypass $http_upgrade;
+	    }
+	}
+
+:wq!
+
+ sudo nginx -t
+ sudo nginx -s reload
+
+ sudo nano /etc/systemd/system/kestrel-hellomvc.service
+
+(in this case `/var/aspnetcore/hellomvc/hellomvc.dll` is where the self-contained app lives)
+
+		[Unit]
+	    Description=Example .NET Web API Application running on Ubuntu
+	
+	    [Service]
+	    ExecStart=/usr/bin/dotnet /var/aspnetcore/hellomvc/hellomvc.dll
+	    Restart=always
+	    RestartSec=10                                          # Restart service after 10 seconds if dotnet service crashes
+	    SyslogIdentifier=dotnet-example
+	    User=www-data
+	    Environment=ASPNETCORE_ENVIRONMENT=Production 
+	
+	    [Install]
+	    WantedBy=multi-user.target
+
+ systemctl enable kestrel-hellomvc.service
+
+Start the service and verify that it is running:
+ 
+ systemctl start kestrel-hellomvc.service
+ systemctl status kestrel-hellomvc.service
+
+Testing the server response:
+
+ wget -p http://localhost:5000 -O /dev/null
+
+If you receive a 500 error response, [ this issue](https://github.com/aspnet/Hosting/issues/717) suggest that: "This error also occurs when attempting a database connection from the startup (eg for seeding) and it fails on the deployment server due to insufficent previleges at the database server".
+
+
+## Deploy
+
+### Windows console
+
+ cd C:\path\to\your\code
+ dotnet publish
+
+If you get the error: "bower' is not recognized as an internal or external command"
+
+ npm install -g bower
+ dotnet publish
+
+
+### Linux console
+
+Upload and put in the correct path. We upload it to /home because it has user permissions (/var doesn't, and we can't do sudo to a remote machine):
+
+ scp -r /mnt/c/the/path/to/your/publish you_user_name@your_ip:/home/your_user_name
+
+Log in to move to the remote machine to move it to the correct directory:
+
+ ssh you_user_name@your_ip
+ sudo mv publish /var/aspnetcore/hellomvc
