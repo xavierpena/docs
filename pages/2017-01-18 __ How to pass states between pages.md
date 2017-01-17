@@ -77,7 +77,7 @@ Yo can go to http://plnkr.co and write this (remember to copy and paste the depa
 
 ## How to use it (A->B->A)
 
-In page A, before sendig the user to B:
+In **page A**, before sendig the user to **page B**:
 
 	// Add the encoded state in the URL to page B:
 	var myState = { ... }; // ***
@@ -85,14 +85,14 @@ In page A, before sendig the user to B:
 	var urlToPageB = 'http://url/to/page/B?' + encodedState;
 	
 
-In page B, get the encoded parameters (no need to decode):
+In **page B**, get the encoded state (no need to decode, we won't use it here. It's only useful in **page A**.):
 
 	// Read the part after "?" in the URL:
 	var encodedState = document.location.search.substring(1);
 	var urlBackToPageA = 'http://url/to/page/B?' + encodedState;
 	
 	
-Back to page A, get the encoded parameters and decode them:
+Back to **page A**, get the encoded state and decode id:
 	
 	// Decode it:
 	var encodedState = document.location.search.substring(1);
