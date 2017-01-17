@@ -77,4 +77,24 @@ Yo can go to http://plnkr.co and write this (remember to copy and paste the depa
 
 ## The URL
 
-// TODO
+In page A, before sendig the user to B:
+
+	// Add the encoded state in the URL to page B:
+	var myState = { ... }; // ***
+	var encodedState = $.param( myState );
+	var urlToPageB = 'http://url/to/page/B?' + encodedState;
+	
+
+In page B, get the encoded parameters (no need to decode):
+
+	// Read the part after "?" in the URL:
+	var encodedState = document.location.search.substring(1);
+	var urlBackToPageA = 'http://url/to/page/B?' + encodedState;
+	
+	
+Back to page A, get the encoded parameters and decode them:
+	
+	// Decode it:
+	var encodedState = document.location.search.substring(1);
+	var decodedState = $.deparam(encodedState);
+	// voilà! you can use decodedState, which will be the same as step 1 (***).
