@@ -75,7 +75,7 @@ Yo can go to http://plnkr.co and write this (remember to copy and paste the depa
 	</script>
 	
 
-## The URL
+## How to use it (A->B->A)
 
 In page A, before sendig the user to B:
 
