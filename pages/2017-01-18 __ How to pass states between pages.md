@@ -33,51 +33,24 @@ For encoding, I will use [jQuery.param](http://api.jquery.com/jQuery.param/). Fr
 
 ## Decoding
 	
-To decode the json from the URL, I will use [this function](http://stackoverflow.com/a/3401265/831138):
+To decode the json from the URL, I will use [this function](https://github.com/chrissrogers/jquery-deparam) extracted from [jQuery BBQ](http://benalman.com/projects/jquery-bbq-plugin/). The documentation for the deparam function can be found [here](http://benalman.com/code/projects/jquery-bbq/examples/deparam/).
 
-	function QueryStringToHash(query) {
-
-	  if (query == '') return null;
-
-	  var hash = {};
-
-	  var vars = query.split("&");
-
-	  for (var i = 0; i < vars.length; i++) {
-		var pair = vars[i].split("=");
-		var k = decodeURIComponent(pair[0]);
-		var v = decodeURIComponent(pair[1]);
-
-		// If it is the first entry with this name
-		if (typeof hash[k] === "undefined") {
-
-		  if (k.substr(k.length-2) != '[]')  // not end with []. cannot use negative index as IE doesn't understand it
-			hash[k] = v;
-		  else
-			hash[k.substr(0, k.length-2)] = [v];
-
-		// If subsequent entry with this name and not array
-		} else if (typeof hash[k] === "string") {
-		  hash[k] = v;  // replace it
-
-		// If subsequent entry with this name and is array
-		} else {
-		  hash[k.substr(0, k.length-2)].push(v);
-		}
-	  } 
-	  return hash;
-	};
 	
-## Testing both
+## Testing both together
 
-Yo can go to http://plnkr.co and write:
+Yo can go to http://plnkr.co and write this (remember to copy and paste the deparam function first):
 
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     
 	<script>
+	
+		// !!!
+		// Copy and paste here the content of the following URL (containing the extracted version of the function `deparam`):
+		// https://raw.githubusercontent.com/chrissrogers/jquery-deparam/master/jquery-deparam.js
 
 		$(document).ready(function() {
 		  
+		  	// TEST OBJECT:
 			var myObject = {
 			  a: {
 				one: 1,
@@ -87,49 +60,21 @@ Yo can go to http://plnkr.co and write:
 			  b: [ 1, 2, 3 ]
 			};
 			
-			var recursiveEncoded = $.param( myObject );
-			 
+			// ENCODE:
+			var recursiveEncoded = $.param( myObject );			 
 			console.log( recursiveEncoded );
-			// shows: a%5Bone%5D=1&a%5Btwo%5D=2&a%5Bthree%5D=3&b%5B%5D=1&b%5B%5D=2&b%5B%5D=3 
+			// result: a%5Bone%5D=1&a%5Btwo%5D=2&a%5Bthree%5D=3&b%5B%5D=1&b%5B%5D=2&b%5B%5D=3 
 			
-			var decoded = QueryStringToHash(recursiveEncoded);
+			// DECODE:
+			var decoded = $.deparam(recursiveEncoded);			
 			console.log(decoded);
-			
-			function QueryStringToHash(query) {
-
-			  if (query == '') return null;
-
-			  var hash = {};
-
-			  var vars = query.split("&");
-
-			  for (var i = 0; i < vars.length; i++) {
-				var pair = vars[i].split("=");
-				var k = decodeURIComponent(pair[0]);
-				var v = decodeURIComponent(pair[1]);
-
-				// If it is the first entry with this name
-				if (typeof hash[k] === "undefined") {
-
-				  if (k.substr(k.length-2) != '[]')  // not end with []. cannot use negative index as IE doesn't understand it
-					hash[k] = v;
-				  else
-					hash[k.substr(0, k.length-2)] = [v];
-
-				// If subsequent entry with this name and not array
-				} else if (typeof hash[k] === "string") {
-				  hash[k] = v;  // replace it
-
-				// If subsequent entry with this name and is array
-				} else {
-				  hash[k.substr(0, k.length-2)].push(v);
-				}
-			  } 
-			  return hash;
-			};    	
-			
+			// result: Object {a: Object, b: Array[3]}
+									
 		});
 
 	</script>
+	
 
- 
+## The URL
+
+// TODO
