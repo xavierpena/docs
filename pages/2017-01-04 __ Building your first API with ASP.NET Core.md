@@ -126,15 +126,14 @@ Convention-based routing is not advised for API's, since conventions need to be 
 
 We will use attribute-based routing instead.
 
-[[div]]
-||~ HTTP Method ||~ Description ||~ Attribute ||~ Level ||~ Sample URI ||
-|| GET || to read an existing city/cities || HttpGet || Action || /api/cities (for a list) /api/cities/1 (for a single element) ||
-|| POST || to create a new city || HttpPost || Action || /api/citites ||
-|| PUT || to update all fields of an existing city || HttpPut || Action || /api/citites/1 ||
-|| PATCH || to update certain fields of an existing city || HttpPatch || Action || /api/cities/1 ||
-|| DELETE || to delete an existing city || HttpDelete || Action || /api/citites/1 ||
-|| --- || provides a template to prefix all templates of action-level attributes || Route || Controller || ---
-[[/div]]
+| HTTP Method | Description | Attribute | Level | Sample URI |
+| --- | --- | --- | --- | --- |
+| GET | to read an existing city/cities | HttpGet | Action | /api/cities (for a list) /api/cities/1 (for a single element) |
+| POST | to create a new city | HttpPost | Action | /api/citites |
+| PUT | to update all fields of an existing city | HttpPut | Action | /api/citites/1 |
+| PATCH | to update certain fields of an existing city | HttpPatch | Action | /api/cities/1 |
+| DELETE | to delete an existing city | HttpDelete | Action | /api/citites/1 |
+| - | provides a template to prefix all templates of action-level attributes | Route | Controller | -
 
 
 ## Testing with Postman
