@@ -2,9 +2,9 @@
 
 ## Source
 
-This video:
+This video: https://www.youtube.com/watch?v=BsTeUs0Y5TM
 
-https://www.youtube.com/watch?v=BsTeUs0Y5TM
+The official NuGet CLI Reference: https://docs.microsoft.com/en-us/nuget/tools/nuget-exe-cli-reference
 
 
 ## Creation
