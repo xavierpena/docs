@@ -30,3 +30,12 @@ https://www.youtube.com/watch?v=BsTeUs0Y5TM
 * Add this folder as a new NuGet repository: Manage nuget packages => options (top-right corner) => + => Select your folder
 * Select the new nuget repository
 * Select your package
+
+
+## Script
+
+To avoid putting your `nuget.exe` in every single project, you can keep it under a `\tools` directory and have the following .bat script:
+
+	nuget pack "../src/ProjectDirectory/MyNuspecFile.nuspec" -OutputDirectory "\path\to\your\packages\directory"
+	PAUSE
+	
