@@ -38,4 +38,28 @@ To avoid putting your `nuget.exe` in every single project, you can keep it under
 
 	nuget pack "../src/ProjectDirectory/MyNuspecFile.nuspec" -OutputDirectory "\path\to\your\packages\directory"
 	PAUSE
-	
+
+
+## Full example
+
+	<?xml version="1.0"?>
+	<package >
+	  <metadata>
+		<id>YourProjectName</id>
+		<version>0.0.4</version>
+		<title>YourProjectName</title>
+		<authors>Xavier Peña</authors>
+		<owners>Xavier Peña</owners>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Some words to describe your project</description>
+		<releaseNotes>What has changed in this release</releaseNotes>
+		<copyright>Copyright 2017</copyright>
+		<tags>Licensing</tags>
+		<dependencies>
+			<dependency id="SameAsInPackages" version="1.1.0" />
+		</dependencies>  	
+	  </metadata>
+	  <files>
+		<file src="..\src\YourProjName\bin\Debug\YourProjName.dll" target="lib"></file>
+	  </files>
+	</package>
