@@ -70,3 +70,15 @@ This would make unnecessary the `<dependencies>` tag in the .nuspec file.
 		<file src="..\src\YourProjName\bin\Debug\YourProjName.dll" target="lib"></file>
 	  </files>
 	</package>
+	
+
+## Other (automatized) solutions
+
+### NuGetizer3000
+
+Apparently [NuGetizer3000](https://github.com/NuGet/NuGet.Build.Packaging) is the only one that works right now in VS2017.
+
+1. Install [the VS2017 extension](http://bit.ly/nugetizer-2017)
+2. Right-click on the project (in VS2017)
+3. "Create NuGet Package"
+4. Done: `Created package at \src\MyProjName\bin\Debug\MyProjName.0.0.1.nupkg.`
