@@ -38,6 +38,13 @@ To avoid putting your `nuget.exe` in every single project, you can keep it under
 
 	nuget pack "../src/ProjectDirectory/MyNuspecFile.nuspec" -OutputDirectory "\path\to\your\packages\directory"
 	PAUSE
+	
+If dependencies must be added, and according to [this stackoverflow answer](http://stackoverflow.com/a/16310138/831138), the script would be:
+
+	nuget pack "../src/ProjectDirectory/MyNuspecFile.nuspec" -OutputDirectory "\path\to\your\packages\directory" -IncludeReferencedProjects
+	PAUSE
+
+This would make unnecessary the `<dependencies>` tag in the .nuspec file.
 
 
 ## Full example
