@@ -8,7 +8,7 @@ Automatize two of the "tedious" processes:
 2. Upload the latest .sql dump to your linux server
 
 
-## Contents
+## \scripts folder contents
 
 * `pscp.exe`: tool to upload a windows file to a linux server
 * `config.bat`: contains all the private configuration variables (passwords, ip's, etc)
