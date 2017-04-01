@@ -18,7 +18,7 @@ Automatize two of the "tedious" processes:
 
 ## pscp.exe
 
-Download [pscp.exe](https://the.earth.li/~sgtatham/putty/latest/w64/pscp.exe) from [putty download page](http://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html).
+Download [pscp.exe](https://the.earth.li/~sgtatham/putty/latest/w64/pscp.exe) from the [putty download page](http://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html).
 
 The [pscp documentation](https://the.earth.li/~sgtatham/putty/0.60/htmldoc/Chapter5.html):
 
