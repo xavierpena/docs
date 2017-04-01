@@ -1,5 +1,12 @@
 # Scripts folder
 
+## The goal
+
+Automatize two of the "tedious" processes:
+
+1. Keep backups of the mysql database (locally)
+2. Upload the latest .sql dump to your linux server
+
 
 ## Contents
 
