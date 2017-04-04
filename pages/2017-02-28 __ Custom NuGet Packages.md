@@ -6,6 +6,8 @@ This video: https://www.youtube.com/watch?v=BsTeUs0Y5TM
 
 The official NuGet CLI Reference: https://docs.microsoft.com/en-us/nuget/tools/nuget-exe-cli-reference
 
+Official documentation: ["Package creation workflow"](https://docs.microsoft.com/en-us/nuget/create-packages/overview-and-workflow)
+
 
 ## Creation
 
@@ -70,7 +72,18 @@ This would make unnecessary the `<dependencies>` tag in the .nuspec file.
 		<file src="..\src\YourProjName\bin\Debug\YourProjName.dll" target="lib"></file>
 	  </files>
 	</package>
-	
+
+
+## Symbol packages
+
+Supplying symbols for your library that allow consumers to step into your code while debugging (see [official documentation](https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages)).
+
+You can create both packages with the -Symbols option, either from a .nuspec file or a project file:
+
+    nuget pack MyPackage.nuspec -Symbols
+
+    nuget pack MyProject.csproj -Symbols
+
 
 ## Other (automatized) solutions
 
@@ -82,3 +95,4 @@ Apparently [NuGetizer3000](https://github.com/NuGet/NuGet.Build.Packaging) is th
 2. Right-click on the project (in VS2017)
 3. "Create NuGet Package"
 4. Done: `Created package at \src\MyProjName\bin\Debug\MyProjName.0.0.1.nupkg.`
+
