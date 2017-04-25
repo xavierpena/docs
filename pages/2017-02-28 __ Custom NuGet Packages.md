@@ -85,6 +85,61 @@ You can create both packages with the -Symbols option, either from a .nuspec fil
     nuget pack MyProject.csproj -Symbols
 
 
+## Script
+
+`publish.bat` file. It needs those other files in the same folder:
+
+* `config.nuspec`, as shown above
+* `version.txt`, which contains an integer of the last package verion that you previously published
+
+The script will:
+
+* Rebuild the solution
+* Read the current version
+* Add one to this version
+* Publish the nuget package
+* Save the publication event in a log file
+
+
+
+It needs a file 
+
+	:: Rebuild solution ::
+	set pathMSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin"
+	@echo off
+	cls
+	call %pathMSBuild%\msbuild.exe "..\..\src\MySolutionFile.sln" /p:configuration=debug
+	if %errorlevel% neq 0 (
+		echo "An error occurred. Aborted."
+		pause
+		exit /b %errorlevel%
+	)
+
+	:: Update the package version ::
+	set /p currentVersion=<version.txt
+	set /a nextVersion=%currentVersion%+1
+	echo Publishing next version: %nextVersion%
+
+	:: Publish nuget package ::
+	set fullVersion="0.0.%nextVersion%"
+	..\nuget.exe pack config.nuspec -Version %fullVersion% -OutputDirectory "\\my\output\directory" -IncludeReferencedProjects -Symbols
+	if %errorlevel% neq 0 (
+		echo "An error occurred. Aborted."
+		pause
+		exit /b %errorlevel%
+	)
+
+	:: Save new version ::
+	>version.txt echo %nextVersion%
+
+	:: Update log ::
+	echo %time%: %fullVersion% >> log.txt 
+
+	echo Publication sucessful.
+
+	pause
+
+
 ## Other (automatized) solutions
 
 ### NuGetizer3000
