@@ -87,8 +87,9 @@ You can create both packages with the -Symbols option, either from a .nuspec fil
 
 ## Script
 
-`publish.bat` file. It needs those other files in the same folder:
+It needs those other files in the same folder:
 
+* `publish.bat`, as shown below
 * `config.nuspec`, as shown above
 * `version.txt`, which contains an integer of the last package verion that you previously published
 
@@ -100,9 +101,7 @@ The script will:
 * Publish the nuget package
 * Save the publication event in a log file
 
-
-
-It needs a file 
+`publish.bat` file:
 
 	:: Rebuild solution ::
 	set pathMSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin"
