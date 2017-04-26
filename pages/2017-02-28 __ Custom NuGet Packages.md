@@ -111,13 +111,18 @@ The script will:
 	set logFileName="log.txt"
 	set baseVersion="0.0."
 
+
+	:: SCRIPT ::
+
+	set errorMessage=An error occurred. Operation aborted.
+
 	@echo off
 
 	:: Rebuild solution ::
 	cls
 	call %pathMSBuild%\msbuild.exe %slnRelativePath% /p:configuration=debug
 	if %errorlevel% neq 0 (
-		echo "An error occurred. Aborted."
+		echo %errorMessage%
 		pause
 		exit /b %errorlevel%
 	)
@@ -128,10 +133,11 @@ The script will:
 	echo Publishing next version: %nextSubVersion%
 
 	:: Publish nuget package ::
-	set fullVersion="%baseVersion%%nextSubVersion%"
-	..\nuget.exe pack config.nuspec -Version %fullVersion% -OutputDirectory %nugetDestinationDirectory% -IncludeReferencedProjects -Symbols
+	set fullVersion=%baseVersion%%nextSubVersion%
+	:: the <vesion> parameter in the .nuspec file is overwritten by the -Version param in the cmd:
+	..\nuget.exe pack config.nuspec -Version "%fullVersion%" -OutputDirectory %nugetDestinationDirectory% -IncludeReferencedProjects -Symbols
 	if %errorlevel% neq 0 (
-		echo "An error occurred. Aborted."
+		echo %errorMessage%
 		pause
 		exit /b %errorlevel%
 	)
@@ -140,9 +146,11 @@ The script will:
 	>%versionFileName% echo %nextSubVersion%
 
 	:: Update log ::
-	echo %date% %time%,%fullVersion% >> %logFileName% 
+	echo %date% %time%;%fullVersion% >> %logFileName% 
 
+	echo ---
 	echo Publication sucessful.
+	echo ---
 
 	pause
 
