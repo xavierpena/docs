@@ -91,7 +91,7 @@ It needs those other files in the same folder:
 
 * `publish.bat`, as shown below
 * `config.nuspec`, as shown above
-* `version.txt`, which contains an integer of the last package verion that you previously published
+* `sub-version.txt`, which contains an integer of the last package verion that you previously published
 
 The script will:
 
