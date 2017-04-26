@@ -103,11 +103,19 @@ The script will:
 
 `publish.bat` file:
 
-	:: Rebuild solution ::
+	:: CONFIG ::
 	set pathMSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin"
+	set slnRelativePath="..\..\src\MySolutionName.sln"
+	set nugetDestinationDirectory="\\path\to\nuget\dir"
+	set versionFileName="version.txt"
+	set logFileName="log.txt"
+	set baseVersion="0.0."
+
 	@echo off
+
+	:: Rebuild solution ::
 	cls
-	call %pathMSBuild%\msbuild.exe "..\..\src\MySolutionFile.sln" /p:configuration=debug
+	call %pathMSBuild%\msbuild.exe %slnRelativePath% /p:configuration=debug
 	if %errorlevel% neq 0 (
 		echo "An error occurred. Aborted."
 		pause
@@ -115,13 +123,13 @@ The script will:
 	)
 
 	:: Update the package version ::
-	set /p currentVersion=<version.txt
-	set /a nextVersion=%currentVersion%+1
-	echo Publishing next version: %nextVersion%
+	set /p currentSubVersion=<%versionFileName%
+	set /a nextSubVersion=%currentSubVersion%+1
+	echo Publishing next version: %nextSubVersion%
 
 	:: Publish nuget package ::
-	set fullVersion="0.0.%nextVersion%"
-	..\nuget.exe pack config.nuspec -Version %fullVersion% -OutputDirectory "\\my\output\directory" -IncludeReferencedProjects -Symbols
+	set fullVersion="%baseVersion%%nextSubVersion%"
+	..\nuget.exe pack config.nuspec -Version %fullVersion% -OutputDirectory %nugetDestinationDirectory% -IncludeReferencedProjects -Symbols
 	if %errorlevel% neq 0 (
 		echo "An error occurred. Aborted."
 		pause
@@ -129,10 +137,10 @@ The script will:
 	)
 
 	:: Save new version ::
-	>version.txt echo %nextVersion%
+	>%versionFileName% echo %nextSubVersion%
 
 	:: Update log ::
-	echo %time%: %fullVersion% >> log.txt 
+	echo %date% %time%,%fullVersion% >> %logFileName% 
 
 	echo Publication sucessful.
 
