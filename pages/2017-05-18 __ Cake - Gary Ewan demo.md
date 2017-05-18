@@ -1,9 +1,11 @@
 
-# Cake - Gary Ewan Park demo
+# A Piece of Cake - C# powered cross platform build automation - Gary Ewan Park
 
 Original video [here](https://vimeo.com/171704581).
 
 Original demo files [here](https://github.com/gep13/CakeDemos).
+
+This post aims to write down all the difficulties and solutions that I've found trying to use Cake for the first time. I basically follow the same demo from the video, and solve some small issues related to that.
 
 
 ## Setting up the demo (previous steps not shown in the video)
@@ -109,6 +111,11 @@ I was finally able to execute my first Cake script. It downloaded all the tools 
 
     RunTarget(target);
 
-(stopped at 00:35:00)
+
+## Next steps
+
+From this point on (00:35:00 mark) it's just easier to simply follow the video.
+
+The steps shown above are a way to unblock certain basic issues that might happen to you in the beggining.
     
 
