@@ -44,7 +44,7 @@ Here is the most basic `build.cake` that you can start with:
     RunTarget(target);
 
 
-## Running the previous example
+## Running this basic example
 
 In Visual Sudio Code, select `View` -> `Integrated Terminal`.
 
@@ -108,4 +108,7 @@ I was finally able to execute my first Cake script. It downloaded all the tools 
         .IsDependentOn("NuGet-Package-Restore");
 
     RunTarget(target);
+
+(stopped at 00:35:00)
+    
 
