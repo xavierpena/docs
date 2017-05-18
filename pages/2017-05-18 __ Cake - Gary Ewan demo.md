@@ -19,7 +19,7 @@ Press `Ctrl+Shift+P` to show all commands.
 Now you can write `Cake` and select `Cake: install a bootstraper` (as shown in the video). Then choose `PowerShell` (if you are working on Windows, like I am).
 
 
-## Next steps
+## Basic cake example
 
 The boostrap file (`build.ps1`) ensures that all executable files (`Cake.exe`) and depenencies are downloaded before starting.
 
@@ -43,3 +43,12 @@ Here is the most basic `build.cake` that you can start with:
         .IsDependentOn("NuGet-Package-Restore");
 
     RunTarget(target);
+
+
+## Running the previous example
+
+In Visual Sudio Code, select `View` -> `Integrated Terminal`.
+
+Type `.\build.ps1` in that terminal and press enter to execute.
+
+WARNING: when doing that, I found that my Notepad.exe was automatically launched (instead of executing the .ps1 file).
