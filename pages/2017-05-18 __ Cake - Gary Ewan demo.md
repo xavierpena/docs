@@ -51,4 +51,12 @@ In Visual Sudio Code, select `View` -> `Integrated Terminal`.
 
 Type `.\build.ps1` in that terminal and press enter to execute.
 
-WARNING: when doing that, I found that my Notepad.exe was automatically launched (instead of executing the .ps1 file).
+WARNING 1: when doing that, I found that my Notepad.exe was automatically launched (instead of executing the .ps1 file). What I had to do to solve that is tell Windows to open .ps1 files with `powershell.exe`(which in my case was placed under `%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe`). So: right click on the .ps1 file -> open with -> select your powershell.exe location.
+
+WARNING 2: then I had problems asking Windows to "always use this program". I found the answer [in this stackoverflow post](https://superuser.com/a/835527). Basically what I did was removing the .ps1 altogether and repeat the process from WARNING 1.
+
+WARNING 3: then I tried to run it in VSCode and I got the following error -> `File build.ps1 cannot be loaded because running scripts is disabled on this system. / + CategoryInfo: SecurityError: (:) [], PSSecurityExce /  + FullyQualifiedErrorId : UnauthorizedAccess`. To solve that, I used [this stackoverflow solution](http://stackoverflow.com/a/4038991/831138): I opened PowerShell(x84) as admin, and I typed `Set-ExecutionPolicy RemoteSigned`.
+
+
+
+
