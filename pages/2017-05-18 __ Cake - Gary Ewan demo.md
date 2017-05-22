@@ -112,10 +112,60 @@ I was finally able to execute my first Cake script. It downloaded all the tools 
     RunTarget(target);
 
 
-## Next steps
+## Tool resolution
 
-From this point on (00:35:00 mark) it's just easier to simply follow the video.
+To make a tool available for the script, we put that kind of syntax at the top of the script:
 
-The steps shown above are a way to unblock certain basic issues that might happen to you in the beggining.
+    #tool nuget:?package=xunit.runner.console
     
+If we want to specify a speciffic nuget repository, we'll put it before the `?` (the other script defaults to `nuget.org`):
 
+    #tool nuget:http://localhost:8081/repository/cake/?package=xunit.runner.console
+    
+Those will be downloaded into the \tools folder.
+
+
+## CleanDirectories
+
+This function makes sure that 1) the folder exists, and 2) the folder is empty.
+
+	Task("Clean")
+		.Does(() => 
+		{
+			CleanDirectories(new[] { "./.build/TestResults" });
+		});
+        
+
+## Creating a NuGet package
+
+Instead of having a .nuspec file (which we could), we'll be creating it on the fly:
+
+	Task("Package")
+		.IsDependentOn("SomeOtherPreviousTask")
+		.Does(() =>
+	{
+		var nuGetPackSettings   = new NuGetPackSettings {
+			Id                      = "Gep13.Cake.Sample.Common",
+			Version                 = "0.1.0",
+			Title                   = "Common Library used by Gep13.Cake.Sample Web Application",
+			Authors                 = new[] {"gep13"},
+			Owners                  = new[] {"gep13"},
+			Description             = "The best Common Library you have ever seen",
+			ProjectUrl              = new Uri("https://github.com/gep13/CakeDemos"),
+			IconUrl                 = new Uri("https://raw.githubusercontent.com/cake-build/graphics/master/png/cake-small.png"),
+			LicenseUrl              = new Uri("https://github.com/gep13/CakeDemos/blob/master/LICENSE"),
+			Copyright               = "gep13 2016",
+			ReleaseNotes            = new [] {"Bug fixes", "Issue fixes", "Typos"},
+			Tags                    = new [] {"Gep13", "Cake", "Sample"},
+			RequireLicenseAcceptance= false,
+			Symbols                 = false,
+			NoPackageAnalysis       = true,
+			Files                   = new [] {
+				new NuSpecContent {Source = "Gep13.Cake.Sample.Common.dll", Target = "bin"},
+			},
+			BasePath                = "./Source/Gep13.Cake.Sample.Common/bin/" + configuration,
+			OutputDirectory         = "./BuildArtifacts/nuget"
+		};
+
+		NuGetPack(nuGetPackSettings);
+	});
