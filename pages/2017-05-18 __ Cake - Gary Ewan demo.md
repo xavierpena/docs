@@ -5,7 +5,9 @@ Original video [here](https://vimeo.com/171704581).
 
 Original demo files [here](https://github.com/gep13/CakeDemos).
 
-This post aims to write down all the difficulties and solutions that I've found trying to use Cake for the first time. I basically follow the same demo from the video, and solve some small issues related to that.
+Since a one hour talk in a conference is not a "how to" video, as I tried to replicate the demo in my computer I came accross some small issues.
+
+This post provides some help about how to solve those issues, along with some "how to" notes taken directly from the video.
 
 
 ## Setting up the demo (previous steps not shown in the video)
