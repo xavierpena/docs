@@ -169,3 +169,14 @@ Instead of having a .nuspec file (which we could), we'll be creating it on the f
 
 		NuGetPack(nuGetPackSettings);
 	});
+
+
+## Debugging the script
+
+We can add a `#break` directive at any line in the script. If there is a debugger attached, it will stop at that point in the cake build.
+
+Instead of using the bootstrapper, use the command line to use cake directly. This attaches a debugger to the process:
+
+    cake .\build.cake --debug
+    
+This gives you a process id. When you have that id, you go to `VisualStudio -> Debug -> Attach process -> select the cake.exe pid -> attach`. This will directly step into the `#break` in your script.
