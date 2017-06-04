@@ -38,4 +38,11 @@ Then import the mysql file
 
 	$ mysql -u <user> -p<password> <dbname> < file.sql
 	
+	
+## Download file from linux
+
+        $ scp remote-srv-username@remote-srv-ip:~/path/to/your/file.extension /mnt/c/???/file.extension
+
+Warning: `/mnt/c` doesn't work due to permission issues.
+	
 
