@@ -99,7 +99,7 @@ I was finally able to execute my first Cake script. It downloaded all the tools 
             // Build the solution, with multiple properties set as extension methods
             // Documentation here: http://cakebuild.net/api/Cake.Common.Tools.MSBuild/MSBuildAliases/F36093FE
             // MSBuildSettings documentation: http://cakebuild.net/api/Cake.Common.Tools.MSBuild/MSBuildSettings/
-            MSBuild("./Source/Gep13.Cake.Sample.WebApplication.sln"), new MSBuildSettings()
+            MSBuild("./Source/Gep13.Cake.Sample.WebApplication.sln", new MSBuildSettings()
                 .SetConfiguration(configuration)
                 .WithProperty("Windows", "True")
                 .WithProperty("TreatWarningsAserrors", "True")
