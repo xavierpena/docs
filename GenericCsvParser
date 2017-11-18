@@ -1,0 +1,145 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+
+namespace AnyNamespace
+{
+    public static class GenericCsvRepository
+    {        
+        /// <summary>
+        /// CSV headers must have the same name as the model (TModel) properties 
+        /// </summary>
+        /// <typeparam name="TModel">Each csv line is parsed to a `TModel`</typeparam>
+        /// <param name="streamReader">Typical usage: `new StreamReader(File.OpenRead(csvFullFilePath))`</param>
+        /// <param name="csvSeparator">Typically: ','</param>
+        public static List<TModel> GetItemsFromCsv<TModel>(StreamReader streamReader, char csvSeparator)
+        {            
+            var line = streamReader.ReadLine();
+            var headers = ParseCsvLineStr(line, csvSeparator);
+
+            var instanceProps = typeof(TModel).GetProperties();
+            var typeConverters = GetTypeConverterPerType(instanceProps);
+
+            var parsedObjList = new List<TModel>();
+
+            while ((line = streamReader.ReadLine()) != null)
+            {
+                var cells = ParseCsvLineStr(line, csvSeparator);
+                var obj = (TModel)Activator.CreateInstance(typeof(TModel));
+                for (var i = 0; i < headers.Length; i++)
+                {
+                    var headerName = headers[i];
+                    var strValue = cells[i];
+
+                    // CSV headers must have the same name as the model (T) properties:
+                    var propInfo = instanceProps
+                        .Where(x => x.Name.ToLower() == headerName.ToLower())
+                        .SingleOrDefault();
+
+                    if (propInfo == null)
+                        throw new Exception($"No property found in type `{typeof(TModel).Name}` that matches the name '{headerName}'");
+
+                    var propValue = TryParseSpecificCases(strValue, propInfo);
+                    if (propValue == null)
+                    {
+                        // Not a specific case. Parse as default:
+                        var typeConverter = typeConverters[propInfo.PropertyType];
+                        propValue = typeConverter.ConvertFromString(strValue);
+                    }
+
+                    propInfo.SetValue(obj, propValue);
+                }
+
+                parsedObjList.Add(obj);
+            }
+
+            return parsedObjList;
+        }
+
+        /// <summary>
+        /// Dictionary of `type` => `typeConverter`.
+        /// `TypeConverter` provides a unified way of converting types of values to other types, as well
+        /// as for accessing standard values and subproperties.
+        /// </summary>
+        private static Dictionary<Type, TypeConverter> GetTypeConverterPerType(PropertyInfo[] instanceProps)
+            => instanceProps
+                .GroupBy(x => x.PropertyType)
+                .Select(x => x.Key)
+                .ToDictionary(x => x, x => TypeDescriptor.GetConverter(x));        
+
+        /// <summary>
+        /// Some conversions from string can't be processed via `TypeConverter`.
+        /// Those exceptions are treated here in this function.
+        /// Returning `null`means that the conversion will be treated later by the `TypeConverter`.
+        /// </summary>
+        private static object TryParseSpecificCases(string strValue, PropertyInfo prop)
+        {
+            // MySql bool:
+            if (prop.PropertyType == typeof(bool))
+            {
+                if (strValue == "0")
+                    return false;
+                else if (strValue == "1")
+                    return true;
+            }
+
+            // MySql DateTime:
+            if (prop.PropertyType == typeof(DateTime))
+            {
+                var dateTime = default(DateTime);
+                var sqlDateTimeStrFormat = "yyyy-MM-dd HH:mm:ss";
+                var parsed = DateTime.TryParseExact(strValue, sqlDateTimeStrFormat, null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dateTime);
+                if (parsed)
+                    return dateTime;          
+            }
+
+            return null;
+        }
+
+        private static string[] ParseCsvLineStr(string csvLineStr, char csvSeparator)
+        {
+            var cells = new List<string>();
+
+            var endOfLastCellIndex = -1;
+            var currentIndex = 0;
+            var isInText = false;
+            
+            while (currentIndex < csvLineStr.Length)
+            {
+                var currentChar = csvLineStr[currentIndex];
+
+                if(currentChar == '"')
+                    isInText = !isInText;                    
+                else if (currentChar == csvSeparator)
+                    if (!isInText)
+                    {
+                        cells.Add(
+                            GetSubstring(csvLineStr, endOfLastCellIndex + 1, currentIndex - 1)
+                        );
+                        endOfLastCellIndex = currentIndex;
+                    }
+
+                currentIndex++;
+            }
+
+            // After the last comma:
+            if (endOfLastCellIndex != csvLineStr.Length - 1)
+                cells.Add(
+                        GetSubstring(csvLineStr, endOfLastCellIndex + 1, csvLineStr.Length - 1)
+                    );
+            else
+                cells.Add("");
+
+            return cells.ToArray();
+        }
+
+        private static string GetSubstring(string csvText, int firstIndex, int lastIndex)
+            => csvText
+                .Substring(firstIndex, (lastIndex - firstIndex + 1))
+                .Trim(' ', '"');
+        
+    }
+}
